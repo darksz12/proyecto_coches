@@ -1,0 +1,30 @@
+import mysql.connector
+import json
+from prettytable import PrettyTable
+
+# 1. Leemos config
+with open('/app/config.json') as f:
+    config = json.load(f)
+
+# 2. Conectamos
+mydb = mysql.connector.connect(**config)
+cursor = mydb.cursor()
+cursor.execute("SELECT * FROM coches")
+resultados = cursor.fetchall()
+
+# 3. Preparamos la TABLA BONITA
+tabla = PrettyTable()
+# Definimos los títulos de las columnas
+tabla.field_names = ["ID", "Marca", "Modelo", "Color", "Kilometraje", "Precio"]
+
+# 4. Rellenamos la tabla
+for c in resultados:
+    # Añadimos una fila por cada coche
+    tabla.add_row([c[0], c[1], c[2], c[3], c[4], c[5]])
+
+# 5. Imprimimos el resultado final
+print("\n")
+print(tabla)
+print("\n")
+
+mydb.close()
